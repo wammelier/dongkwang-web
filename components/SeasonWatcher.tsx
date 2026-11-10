@@ -7,11 +7,12 @@ import { useEffect } from "react";
 // 판단은 서버가 하므로 방문자 기기 시계가 틀려도 잘못된 절기를 보여주지 않는다.
 const MAX_DELAY = 6 * 60 * 60 * 1000;
 
-export function SeasonWatcher({ nextChangeAt }: { nextChangeAt: string }) {
+export function SeasonWatcher({ nextChangeAt }: { nextChangeAt: string | null }) {
   const router = useRouter();
 
   useEffect(() => {
-    const delay = new Date(nextChangeAt).getTime() - Date.now() + 1000;
+    // 예정된 전환이 없으면 가끔 다시 받아 오기만 한다 (관리자가 바꿔 둔 설정을 반영)
+    const delay = nextChangeAt ? new Date(nextChangeAt).getTime() - Date.now() + 1000 : MAX_DELAY;
     const timer = setTimeout(() => router.refresh(), Math.min(Math.max(delay, 60_000), MAX_DELAY));
 
     let hiddenAt = 0;

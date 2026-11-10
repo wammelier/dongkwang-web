@@ -1,5 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { AUTH_COOKIE_OPTIONS } from "@/lib/supabase/cookies";
 import { isSupabaseConfigured, SUPABASE_ANON_KEY, SUPABASE_URL } from "@/lib/supabase/env";
 
 // 로그인 없이 열 수 있는 관리자 경로
@@ -15,6 +16,7 @@ export async function proxy(request: NextRequest) {
 
   let response = NextResponse.next({ request });
   const supabase = createServerClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+    cookieOptions: AUTH_COOKIE_OPTIONS,
     cookies: {
       getAll: () => request.cookies.getAll(),
       setAll(cookiesToSet, headers) {

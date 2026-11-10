@@ -6,6 +6,7 @@
     "node": ">=24.0.0"
   },
   "scripts": {
+    "predev": "node scripts/check-node.mjs",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
@@ -15,7 +16,9 @@
     "e2e:setup": "node scripts/e2e-account.mjs",
     "e2e:remove": "node scripts/e2e-account.mjs --remove",
     "e2e:login": "node scripts/e2e-login.mjs",
-    "e2e:video": "playwright test -c playwright.tour.config.ts"
+    "e2e:video": "playwright test -c playwright.tour.config.ts",
+    "check:deploy": "node scripts/check-deploy.mjs",
+    "check:node": "node scripts/check-node.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "0.12.7",

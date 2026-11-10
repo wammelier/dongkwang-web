@@ -32,6 +32,8 @@ Supabase 값이 없으면 공개 페이지는 예시 데이터로, 관리자 페
 | `npm test` | 단위·DB 권한 테스트 (Docker 불필요, 로컬에서 Postgres를 흉내 냄) |
 | `npm run lint` | 코드 검사 |
 | `npm run e2e` | 브라우저 E2E 4건 — [docs/E2E-테스트.md](docs/E2E-테스트.md) |
+| `npm run check:deploy -- <주소>` | 배포된 사이트 점검(환경 변수·주소·헤더·CSP) — [docs/배포-가이드.md](docs/배포-가이드.md) |
+| `npm run check:node` | Node.js가 알려진 보안 취약점 수정 버전인지 점검 (`npm run dev`를 켤 때도 자동 실행) |
 | `npm run e2e:video` | 홈페이지·어드민 둘러보기 영상 촬영 — [e2e-videos/README.md](e2e-videos/README.md) |
 
 ## 문서
@@ -40,6 +42,8 @@ Supabase 값이 없으면 공개 페이지는 예시 데이터로, 관리자 페
 - [docs/관리자-사용-설명서.md](docs/관리자-사용-설명서.md) — 교회 담당자용
 - [docs/교회-입력-필요-항목.md](docs/교회-입력-필요-항목.md) — 공개 전에 교회에서 준비할 자료 (자리표시 문구 목록)
 - [docs/E2E-테스트.md](docs/E2E-테스트.md)
+- [docs/배포-가이드.md](docs/배포-가이드.md) — Vercel 환경 변수, Supabase 주소 설정, 도메인 연결, Node 보안 패치
+- [docs/보안-점검-결과.md](docs/보안-점검-결과.md) — 보안 점검 결과와 남은 권고
 
 ## 보안 의존성 점검
 

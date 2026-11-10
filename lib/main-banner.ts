@@ -32,7 +32,8 @@ export type ResolvedBanner = {
   primary: { label: string; href: string } | null;
   reason: string;
   /** 다음에 배너가 바뀔 수 있는 시각 (적용한 절기 전환·특별 배너 시작/종료 중 가장 이른 것) */
-  nextChangeAt: string;
+  /** 바뀔 일정이 없으면(적용한 절기도 예약된 특별 배너도 없을 때) null */
+  nextChangeAt: string | null;
   specialId: string | null;
 };
 
@@ -59,7 +60,7 @@ function effectiveSeason(rows: BannerRow[], date: string) {
 }
 
 /** 절기 때문에 배너가 다음에 바뀌는 시각. 켜지 않은 절기는 건너뛴다 */
-function nextSeasonChange(rows: BannerRow[], from: string) {
+function nextSeasonChange(rows: BannerRow[], from: string): string | null {
   const first = effectiveSeason(rows, from);
   const key = first.key;
   let selection = first.selection;
@@ -68,7 +69,7 @@ function nextSeasonChange(rows: BannerRow[], from: string) {
     if (next.key !== key) return seoulMidnight(selection.end).toISOString();
     selection = next.selection;
   }
-  return seoulMidnight(selection.end).toISOString();
+  return null; // 앞으로 몇 해 동안 바뀔 절기가 없다 (적용한 절기가 없을 때)
 }
 
 export function resolveBanner(rows: BannerRow[], now: Date = new Date()): ResolvedBanner {
@@ -77,13 +78,14 @@ export function resolveBanner(rows: BannerRow[], now: Date = new Date()): Resolv
   const seasonName = defaults[key].name;
 
   // 다음 전환: 적용한 절기의 끝, 지금 특별 배너의 끝, 아직 시작 전인 특별 배너의 시작
-  const changes = [nextSeasonChange(rows, today)];
+  const seasonChange = nextSeasonChange(rows, today);
+  const changes: string[] = seasonChange ? [seasonChange] : [];
   for (const r of rows) {
     if (r.kind !== "special" || r.status !== "published") continue;
     if (r.publish_start && new Date(r.publish_start) > now) changes.push(new Date(r.publish_start).toISOString());
     if (r.publish_end && new Date(r.publish_end) > now) changes.push(new Date(r.publish_end).toISOString());
   }
-  const nextChangeAt = changes.sort()[0];
+  const nextChangeAt = changes.sort()[0] ?? null;
 
   const special = rows
     .filter((r) => r.kind === "special" && live(r, now))

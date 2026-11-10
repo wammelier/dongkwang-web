@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { requireStaff } from "@/lib/auth";
+import { checkNodeVersion } from "@/lib/node-security.mjs";
 import { BANNER_COLUMNS } from "@/lib/banner-admin";
 import { formatDot, formatMonthDay, formatTime } from "@/lib/date";
 import { POST_TYPE_LABEL, POST_TYPES } from "@/lib/posts";
@@ -69,7 +70,7 @@ export default async function DashboardPage({ searchParams }: Props) {
         </h2>
         <p className="m-0 mt-2 text-xl font-bold">{season.source === "special" ? `특별 배너 게시 중 (${season.seasonName} 기간)` : `현재 절기: ${season.seasonName}`}</p>
         <p className="m-0 mt-1 text-[15px] text-ink-muted">
-          다음 전환: {fmt.format(new Date(season.nextChangeAt))} (한국 시간) · {season.reason}
+          {season.nextChangeAt ? `다음 전환: ${fmt.format(new Date(season.nextChangeAt))} (한국 시간)` : "다음 전환: 예정 없음"} · {season.reason}
         </p>
       </section>
 
@@ -119,7 +120,31 @@ export default async function DashboardPage({ searchParams }: Props) {
           }))}
         />
       </div>
+
+      {admin.role === "super_admin" && <ServerStatus />}
     </div>
+  );
+}
+
+/** 서버의 Node.js가 알려진 보안 취약점(Node2Shell 등) 수정 버전인지 보여 준다. 최고 관리자에게만 보인다 */
+function ServerStatus() {
+  const node = checkNodeVersion();
+  return (
+    <section
+      aria-label="서버 환경"
+      className={`rounded-card border px-5 py-4 text-[15px] ${node.ok ? "border-line bg-white text-ink-muted" : "border-[#e9b8b3] bg-[#fbeceb] text-[var(--danger)]"}`}
+    >
+      <p className="m-0">
+        서버 환경 · Node.js {node.version}
+        {node.ok ? " · 알려진 보안 패치가 적용되어 있습니다." : " · 보안 패치가 필요합니다."}
+      </p>
+      {node.problems.map((p) => (
+        <p key={p.id} className="m-0 mt-1 text-sm">
+          {p.name}({p.id}) 수정 전 버전입니다.{" "}
+          {p.fixed ? `${p.fixed} 이상이어야 합니다.` : "수정 버전이 공지된 Node 줄(22·24·26)이 아닙니다."} 홈페이지 개발 담당자에게 알려 주세요.
+        </p>
+      ))}
+    </section>
   );
 }
 

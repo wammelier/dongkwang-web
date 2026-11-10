@@ -53,7 +53,9 @@ export default async function BannersPage({ searchParams }: Props) {
           </h2>
           <p className="m-0 mt-1 text-[15px] text-ink-muted">{current.reason}</p>
           <p className="m-0 mt-1 text-[15px] text-ink-muted">
-            다음 전환: {formatDot(current.nextChangeAt)} {formatTime(current.nextChangeAt)} (한국 시간)
+            {current.nextChangeAt
+              ? `다음 전환: ${formatDot(current.nextChangeAt)} ${formatTime(current.nextChangeAt)} (한국 시간)`
+              : "다음 전환: 예정 없음 (적용한 절기가 없어 연중 배너를 계속 보여 줍니다)"}
           </p>
         </div>
         <div className="overflow-hidden rounded-card border border-line">

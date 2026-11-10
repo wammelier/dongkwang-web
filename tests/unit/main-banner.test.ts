@@ -95,7 +95,7 @@ describe("메인 배너 선택 (기획서 15.4)", () => {
     expect(resolveBanner([special], seoul("2026-11-21T12:00:00")).nextChangeAt).toBe("2026-11-22T15:00:00.000Z");
     // 대림절을 켰다면 11/29 시작, 켜지 않았다면 켠 절기가 없으니 그때까지 바뀌지 않는다
     expect(resolveBanner([applied("advent")], seoul("2026-11-21T12:00:00")).nextChangeAt).toBe("2026-11-28T15:00:00.000Z");
-    expect(resolveBanner([], seoul("2026-11-21T12:00:00")).nextChangeAt > "2027-01-01").toBe(true);
+    expect(resolveBanner([], seoul("2026-11-21T12:00:00")).nextChangeAt).toBeNull();
   });
 
   it("다음 전환은 켜지 않은 절기를 건너뛰어 켠 절기의 시작을 가리킨다", () => {

@@ -5,7 +5,8 @@ import { join } from "node:path";
 import type { Browser, BrowserContext, Page } from "@playwright/test";
 import "../env";
 
-export const VIDEO_DIR = join(__dirname, "..", "..", "e2e-videos");
+// 영상 저장 폴더 (확인용 실행에서 기존 영상을 덮어쓰지 않도록 TOUR_VIDEO_DIR로 바꿀 수 있다)
+export const VIDEO_DIR = process.env.TOUR_VIDEO_DIR ?? join(__dirname, "..", "..", "e2e-videos");
 export const BASE_URL = process.env.E2E_BASE_URL ?? "http://localhost:3000";
 
 export const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
@@ -81,6 +82,13 @@ export async function recordTour(
   // 확인 창(휴지통 완전 삭제 등)은 촬영 중 자동으로 '확인'
   page.on("dialog", (d) => d.accept());
 
+  // 콘텐츠 보안 정책(CSP)에 막힌 접속·불러오기가 있으면 촬영(시험)을 실패로 만든다
+  const cspViolations = new Set<string>();
+  page.on("console", (m) => {
+    const t = m.text();
+    if (/Content Security Policy|Refused to (load|connect|frame|apply|execute|create)/i.test(t)) cspViolations.add(t.replace(/\s+/g, " ").slice(0, 220));
+  });
+
   const pause = (ms = 900) => page.waitForTimeout(ms);
   const tour: Tour = {
     page,
@@ -122,6 +130,7 @@ export async function recordTour(
   try {
     await run(tour, context);
     await pause(1200);
+    if (cspViolations.size) throw new Error(`CSP에 막힌 요청 ${cspViolations.size}건:\n- ${[...cspViolations].join("\n- ")}`);
   } catch (e) {
     failure = e;
   } finally {

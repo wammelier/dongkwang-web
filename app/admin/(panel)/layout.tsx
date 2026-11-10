@@ -21,7 +21,7 @@ export default async function PanelLayout({ children }: { children: React.ReactN
         <div className="mt-auto hidden flex-col gap-2 border-t border-line px-1 pt-4 text-sm lg:flex">
           <p className="m-0 font-bold">{admin.name || admin.email}</p>
           <p className="m-0 text-ink-muted">{ROLE_LABEL[admin.role]}</p>
-          <Link href="/" target="_blank" className="text-sm">홈페이지 보기 ↗</Link>
+          <Link href="/" target="_blank" rel="noopener" className="text-sm">홈페이지 보기 ↗</Link>
           <form action={signOut}>
             <button type="submit" className="text-ink-muted hover:text-ink">로그아웃</button>
           </form>
