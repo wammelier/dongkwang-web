@@ -45,6 +45,18 @@ describe("CSP (lib/csp.ts)", () => {
     expect(none).not.toContain("supabase");
     expect(directive(none, "connect-src")).toBe("connect-src 'self'");
   });
+
+  it("nonce가 있으면 스크립트는 nonce만 허용하고 unsafe-inline을 뺀다", () => {
+    const nonce = "YWJjZGVmZ2hpamtsbW5vcA==";
+    const csp = buildCsp({ supabaseUrl: SUPA, nonce });
+    expect(directive(csp, "script-src")).toBe(`script-src 'self' 'nonce-${nonce}' 'strict-dynamic'`);
+    expect(buildCsp({ supabaseUrl: SUPA })).toContain("script-src 'self' 'unsafe-inline'");
+  });
+
+  it("nonce에 정책을 바꾸는 글자(세미콜론·공백·줄바꿈)가 있으면 거부한다", () => {
+    expect(() => buildCsp({ nonce: "aaaaaaaaaaaaaaaa; script-src *" })).toThrow();
+    expect(() => buildCsp({ nonce: "aaaaaaaaaaaaaaaa\nx" })).toThrow();
+  });
 });
 
 describe("로그인 쿠키 설정 (lib/supabase/cookies.ts)", () => {

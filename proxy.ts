@@ -1,5 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { buildCsp } from "@/lib/csp";
 import { AUTH_COOKIE_OPTIONS } from "@/lib/supabase/cookies";
 import { isSupabaseConfigured, SUPABASE_ANON_KEY, SUPABASE_URL } from "@/lib/supabase/env";
 
@@ -12,7 +13,19 @@ const PUBLIC_ADMIN_PATHS = ["/admin/login", "/admin/forgot-password", "/admin/au
  */
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  if (!isSupabaseConfigured) return NextResponse.next(); // 관리자 화면이 설정 안내를 보여준다
+
+  // 관리자 화면은 요청마다 새 nonce로 스크립트를 허용하는 엄격한 CSP를 쓴다 (lib/csp.ts).
+  // Next.js는 '요청'의 CSP 헤더에서 nonce를 읽어 자기 스크립트에 붙이므로 요청과 응답 양쪽에 넣는다.
+  const nonce = btoa(crypto.randomUUID());
+  const csp = buildCsp({ supabaseUrl: SUPABASE_URL || undefined, dev: process.env.NODE_ENV !== "production", nonce });
+  request.headers.set("x-nonce", nonce);
+  request.headers.set("Content-Security-Policy", csp);
+  const withCsp = (res: NextResponse) => {
+    res.headers.set("Content-Security-Policy", csp);
+    return res;
+  };
+
+  if (!isSupabaseConfigured) return withCsp(NextResponse.next({ request })); // 관리자 화면이 설정 안내를 보여준다
 
   let response = NextResponse.next({ request });
   const supabase = createServerClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
@@ -33,7 +46,7 @@ export async function proxy(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (PUBLIC_ADMIN_PATHS.some((p) => pathname.startsWith(p))) return response;
+  if (PUBLIC_ADMIN_PATHS.some((p) => pathname.startsWith(p))) return withCsp(response);
 
   const redirectTo = (path: string, reason?: string) => {
     const url = request.nextUrl.clone();
@@ -48,13 +61,9 @@ export async function proxy(request: NextRequest) {
 
   if (!user) return redirectTo("/admin/login");
 
-  const { data: profile } = await supabase.from("profiles").select("is_active").eq("id", user.id).maybeSingle();
-  if (!profile?.is_active) {
-    await supabase.auth.signOut();
-    return redirectTo("/admin/login", "inactive");
-  }
-
-  return response;
+  // 계정 사용 여부(is_active)는 여기서 다시 조회하지 않는다. 관리자 레이아웃과 모든 서버 동작이
+  // lib/auth.ts에서 확인하고(요청당 1회), DB 권한(RLS)도 비활성 계정을 막는다.
+  return withCsp(response);
 }
 
 export const config = {

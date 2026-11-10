@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 
+// 요청마다 새 nonce(proxy.ts)로 스크립트를 허용하므로 정적으로 미리 만들면 안 된다
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: { default: "관리자", template: "%s | 동광교회 관리자" },
   robots: { index: false, follow: false },
