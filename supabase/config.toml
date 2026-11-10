@@ -1,0 +1,28 @@
+# Supabase CLI 설정 (로컬 개발: `npx supabase start`, Docker 필요)
+project_id = "dongkwang-web"
+
+[db]
+major_version = 15
+
+[db.seed]
+enabled = true
+sql_paths = ["./seed.sql"]
+
+[auth]
+site_url = "http://localhost:3000"
+additional_redirect_urls = ["http://localhost:3000/admin/auth/confirm"]
+# 공개 가입 없음 — 최고 관리자 초대로만 계정 생성 (계획서 2장)
+enable_signup = false
+minimum_password_length = 10
+
+[auth.email]
+enable_signup = false
+enable_confirmations = false
+
+[auth.email.template.invite]
+subject = "[동광교회] 홈페이지 관리자로 초대합니다"
+content_path = "./supabase/templates/invite.html"
+
+[auth.email.template.recovery]
+subject = "[동광교회] 관리자 비밀번호 재설정"
+content_path = "./supabase/templates/recovery.html"

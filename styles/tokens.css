@@ -1,0 +1,64 @@
+/* 동광교회 홈페이지 디자인 시스템 · 시안 3 동네 교회 — tokens.json에서 생성 */
+:root {
+  /* 색 */
+  --surface: #ffffff;
+  --surface-soft: #ffffff;
+  --surface-raised: #ffffff;
+  --surface-deep: #ffffff;
+  --line: #e4e6e1;
+  --ink: #2f3a33;
+  --ink-muted: #55615a;
+  --ink-on-deep: #2f3a33;
+  --ink-on-deep-muted: #55615a;
+  --primary: #0b7772;
+  --primary-hover: #095f5b;
+  --primary-soft: #d7f2ef;
+  --on-primary: #ffffff;
+  --label: #2f6b5f;
+  --accent: #95c83c;
+  --accent-soft: #f3f2ee;
+  --accent-text: #4a6a12;
+  --badge: #2b3861;
+  --focus: #2b3861;
+  --danger: #a3261c;
+  --brand-teal: #00b9b5;
+  --brand-lime: #95c83c;
+  --brand-indigo: #2b3861;
+  --brand-gray: #808284;
+  --gradient-brand: linear-gradient(0deg, #eef2ea 0%, #eef2ea 100%);
+  /* 서체 */
+  --font-display: "Gowun Dodum", "Pretendard Variable", Pretendard, "Noto Sans KR", system-ui, sans-serif;
+  --font-body: "Pretendard Variable", Pretendard, "Noto Sans KR", system-ui, sans-serif;
+  /* 간격 */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 26px;
+  --space-7: 48px;
+  --space-8: 72px;
+  --space-9: 88px;
+  /* 모서리 */
+  --radius-sm: 12px;
+  --radius-md: 20px;
+  --radius-lg: 32px;
+  --radius-pill: 999px;
+  /* 그림자 */
+  --shadow-card: 0 10px 30px rgba(31, 61, 54, 0.12);
+  --shadow-pop: 0 20px 48px rgba(31, 61, 54, 0.18);
+}
+
+body { background: var(--surface); color: var(--ink); font-family: var(--font-body); }
+.display { font-family: var(--font-display); font-size: 52px; line-height: 1.25; font-weight: 400; letter-spacing: -0.01em; }
+.h1 { font-family: var(--font-display); font-size: 40px; line-height: 1.25; font-weight: 400; letter-spacing: -0.01em; }
+.h2 { font-family: var(--font-display); font-size: 32px; line-height: 1.3; font-weight: 400; letter-spacing: 0; }
+.h3 { font-family: var(--font-body); font-size: 20px; line-height: 1.4; font-weight: 700; letter-spacing: 0; }
+.value { font-family: var(--font-body); font-size: 22px; line-height: 1.35; font-weight: 700; letter-spacing: 0; }
+.lead { font-family: var(--font-body); font-size: 19px; line-height: 1.7; font-weight: 400; letter-spacing: 0; }
+.body { font-family: var(--font-body); font-size: 17px; line-height: 1.75; font-weight: 400; letter-spacing: 0; }
+.small { font-family: var(--font-body); font-size: 14px; line-height: 1.6; font-weight: 400; letter-spacing: 0; }
+.label { font-family: var(--font-body); font-size: 15px; line-height: 1.4; font-weight: 700; letter-spacing: 0; }
+.button { font-family: var(--font-body); font-size: 17px; line-height: 1; font-weight: 700; letter-spacing: 0; }
+.nav { font-family: var(--font-body); font-size: 16px; line-height: 1; font-weight: 500; letter-spacing: 0; }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }

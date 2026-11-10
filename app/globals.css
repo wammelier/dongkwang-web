@@ -1,26 +1,60 @@
+@import "../styles/tokens.css";
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
+/* 토큰을 Tailwind 테마에 연결 — 색 값은 tokens.css에만 둔다 (계획서 8장) */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-surface: var(--surface);
+  --color-line: var(--line);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-soft: var(--primary-soft);
+  --color-on-primary: var(--on-primary);
+  --color-label: var(--label);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-badge: var(--badge);
+  --color-focus: var(--focus);
+  --color-brand-indigo: var(--brand-indigo);
+  --font-sans: "Noto Sans KR", var(--font-body);
+  --radius-card: 8px;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+:root {
+  /* 최종 안의 중립 테두리 버튼색 */
+  --line-strong: #c9bda8;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "Noto Sans KR", var(--font-body);
+  font-size: 17px;
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* base 레이어에 둬야 버튼 등 유틸리티 색이 이긴다 */
+@layer base {
+  a {
+    color: var(--primary);
+  }
+  a:hover {
+    color: var(--primary-hover);
+  }
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
 }

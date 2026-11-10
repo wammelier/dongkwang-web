@@ -32,6 +32,7 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.example
 
 # vercel
 .vercel
@@ -39,3 +40,14 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# E2E 로그인 세션·실패 기록
+/e2e/.auth/
+/test-results/
+/playwright-report/
+
+# npm이 이 프로젝트의 패키지 관리자다. 다른 관리자의 락 파일은 올리지 않는다 (bun.lock은 Next 15 등 옛 버전을 고정함)
+/bun.lock
+
+# E2E 촬영 영상은 용량이 크고 관리자 이메일이 보여서 올리지 않는다 (안내문 e2e-videos/README.md만 올림)
+/e2e-videos/*.webm
